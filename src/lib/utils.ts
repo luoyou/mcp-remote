@@ -221,14 +221,14 @@ export async function connectToRemoteServer(
   const sseTransport = transportStrategy === 'sse-only' || transportStrategy === 'sse-first'
   const transport = sseTransport
     ? new SSEClientTransport(url, {
-        authProvider,
-        requestInit: { headers },
-        eventSourceInit,
-      })
+      authProvider,
+      requestInit: { headers },
+      eventSourceInit,
+    })
     : new StreamableHTTPClientTransport(url, {
-        authProvider,
-        requestInit: { headers },
-      })
+      authProvider,
+      requestInit: { headers },
+    })
 
   try {
     if (DEBUG) debugLog('Attempting to connect to remote server', { sseTransport })
@@ -478,7 +478,7 @@ async function findExistingClientPort(serverUrlHash: string): Promise<number | u
     .map((uri) => new URL(uri))
     .find(({ hostname }) => hostname === 'localhost' || hostname === '127.0.0.1')
   if (!localhostRedirectUri) {
-    throw new Error('Cannot find localhost callback URI from existing client information')
+    // throw new Error('Cannot find localhost callback URI from existing client information')
   }
 
   return parseInt(localhostRedirectUri.port)
