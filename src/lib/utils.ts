@@ -642,25 +642,8 @@ export async function parseCommandLineArgs(args: string[], usage: string) {
   const defaultPort = calculateDefaultPort(serverUrlHash)
 
   // Use the specified port, or the existing client port or fallback to find an available one
-  const [existingClientPort, availablePort] = await Promise.all([findExistingClientPort(serverUrlHash), findAvailablePort(defaultPort)])
-  let callbackPort: number
 
-  if (specifiedPort) {
-    if (existingClientPort && specifiedPort !== existingClientPort) {
-      log(
-        `Warning! Specified callback port of ${specifiedPort}, which conflicts with existing client registration port ${existingClientPort}. Deleting existing client data to force reregistration.`,
-      )
-      await rm(getConfigFilePath(serverUrlHash, 'client_info.json'))
-    }
-    log(`Using specified callback port: ${specifiedPort}`)
-    callbackPort = specifiedPort
-  } else if (existingClientPort) {
-    log(`Using existing client port: ${existingClientPort}`)
-    callbackPort = existingClientPort
-  } else {
-    log(`Using automatically selected callback port: ${availablePort}`)
-    callbackPort = availablePort
-  }
+  let callbackPort: number = await findAvailablePort(defaultPort)
 
   if (Object.keys(headers).length > 0) {
     log(`Using custom headers: ${JSON.stringify(headers)}`)
